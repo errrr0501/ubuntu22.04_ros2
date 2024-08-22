@@ -1,6 +1,7 @@
 # install python dep
 pyrealsense2
 tf
+numpy-quaternion
 # install some pip packages needed for testing
 # argcomplete 
 # flake8-blind-except 
