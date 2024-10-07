@@ -1,7 +1,7 @@
 # install python dep
-pyrealsense2
-tf
-numpy-quaternion
+#pyrealsense2
+#tf
+#numpy-quaternion
 # install some pip packages needed for testing
 # argcomplete 
 # flake8-blind-except 
@@ -30,3 +30,10 @@ numpy-quaternion
 # gputil
 # nvidia-pyindex
 # nvidia-tensorflow
+#numpy==1.26.4
+#python3-pykdl
+urdf_parser_py
+scipy
+matplotlib
+pybullet
+

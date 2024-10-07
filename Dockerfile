@@ -25,7 +25,7 @@ RUN groupadd --gid "${GID}" "${GROUP}" \
 
 # * Replace apt urls
 # ? Change to tku
-RUN sed -i 's@archive.ubuntu.com@ftp.tku.edu.tw@g' /etc/apt/sources.list
+# RUN sed -i 's@archive.ubuntu.com@ftp.tku.edu.tw@g' /etc/apt/sources.list
 # ? Change to Taiwan
 # RUN sed -i 's@archive.ubuntu.com@tw.archive.ubuntu.com@g' /etc/apt/sources.list
 
@@ -66,7 +66,7 @@ RUN apt update \
         python3-colcon-common-extensions \
         software-properties-common \
         lsb-release \
-        ros-humble-rmw-cyclonedds-cpp \
+        #ros-humble-rmw-cyclonedds-cpp \
         # * Work tools
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
@@ -109,19 +109,19 @@ RUN apt update \
 RUN ./config/pip/pip_setup.sh
 
 
-RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
-RUN sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
-RUN apt update && apt install -y --no-install-recommends \
-#   #Realsense SDK depend
-    librealsense2-dkms \
-    librealsense2-utils \
-    librealsense2-dev \
-    librealsense2-dbg \
-    # ros-humble-librealsense2* \
-    ros-humble-diagnostic-updater \
-    ros-humble-moveit \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
+# RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+# RUN sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
+# RUN apt update && apt install -y --no-install-recommends \
+# #   #Realsense SDK depend
+#     librealsense2-dkms \
+#     librealsense2-utils \
+#     librealsense2-dev \
+#     librealsense2-dbg \
+#     # ros-humble-librealsense2* \
+#     ros-humble-diagnostic-updater \
+#     ros-humble-moveit \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists 
 
 
 #   #OMPL depend
@@ -141,7 +141,9 @@ RUN apt update && apt install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists 
 
-RUN sudo pip3 install -vU https://github.com/CastXML/pygccxml/archive/develop.zip pyplusplus
+# RUN sudo pip3 install -vU https://github.com/CastXML/pygccxml/archive/develop.zip pyplusplus
+
+RUN sudo -H pip3 install -vU pygccxml pyplusplus
 
 RUN apt update && apt install -y --no-install-recommends \
     castxml \
@@ -168,16 +170,36 @@ USER ${USER}
 
 RUN ./config/shell/bash_setup.sh "${USER}" "${GROUP}" \
     && ./config/shell/terminator/terminator_setup.sh "${USER}" "${GROUP}" \
-    && ./config/shell/tmux/tmux_setup.sh "${USER}" "${GROUP}" \
+    # && ./config/shell/tmux/tmux_setup.sh "${USER}" "${GROUP}" \
     && sudo rm -rf /config
 RUN export CXX=g++
 RUN export MAKEFLAGS="-j nproc"
-RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
+# RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+# RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 
 # * Switch workspace to ~/work
 RUN sudo mkdir -p /home/"${USER}"/work
 WORKDIR /home/"${USER}"/work
+
+###########build ompl############
+RUN sudo git clone https://github.com/ompl/ompl.git
+
+RUN sudo cd ompl
+RUN sudo mkdir -p build/Release
+RUN sudo cd build/Release
+RUN sudo cmake ../..
+RUN sudo make -j 6 update_bindings
+RUN sudo make install
+###########build ompl############
+# RUN sudo wget https://ompl.kavrakilab.org/core/install-ompl-ubuntu.sh
+# RUN sudo chmod u+x install-ompl-ubuntu.sh
+# RUN sudo ./install-ompl-ubuntu.sh --python
+
+########pykdl###########
+RUN sudo apt update
+RUN sudo apt install python3-pykdl
+RUN sudo pip3 install numpy==1.26.4
+
 
 # * Make SSH available
 EXPOSE 22
