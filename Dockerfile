@@ -184,21 +184,24 @@ WORKDIR /home/"${USER}"/work
 ###########build ompl############
 RUN sudo git clone https://github.com/ompl/ompl.git
 
-RUN sudo cd ompl
+WORKDIR /home/"${USER}"/work/ompl
 RUN sudo mkdir -p build/Release
-RUN sudo cd build/Release
+WORKDIR /home/"${USER}"/work/ompl/build/Release
 RUN sudo cmake ../..
 RUN sudo make -j 6 update_bindings
+RUN sudo make
 RUN sudo make install
 ###########build ompl############
 # RUN sudo wget https://ompl.kavrakilab.org/core/install-ompl-ubuntu.sh
 # RUN sudo chmod u+x install-ompl-ubuntu.sh
 # RUN sudo ./install-ompl-ubuntu.sh --python
 
+WORKDIR /home/"${USER}"/work
 ########pykdl###########
 RUN sudo apt update
 RUN sudo apt install python3-pykdl
-RUN sudo pip3 install numpy==1.26.4
+################ompl recommends <1.25
+RUN sudo pip3 install numpy==1.24.4
 
 
 # * Make SSH available

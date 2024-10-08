@@ -16,6 +16,6 @@ docker run --rm \
     -v /etc/timezone:/etc/timezone:ro \
     -v /etc/localtime:/etc/localtime:ro \
     -v /dev:/dev \
-    -v "${WS_PATH}/../":/home/"${user}"/work \
+    -v "${WS_PATH}":/home/"${user}"/work \
     -it --name "ompl_workspace" "${DOCKER_HUB_USER}"/"pybullet_ompl"
 
