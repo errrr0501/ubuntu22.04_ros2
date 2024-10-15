@@ -202,6 +202,8 @@ RUN sudo apt update
 RUN sudo apt install python3-pykdl
 ################ompl recommends <1.25
 RUN sudo pip3 install numpy==1.24.4
+RUN sudo pip3 install pandas
+
 
 
 # * Make SSH available
