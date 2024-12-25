@@ -178,6 +178,10 @@ RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 # * Switch workspace to ~/work
 RUN sudo mkdir -p /home/"${USER}"/work
 WORKDIR /home/"${USER}"/work
+#moveit update lacking of lib, manaual install here
+RUN sudo apt install ros-humble-geometric-shapes
+RUN sudo apt install ros-humble-srdfdom
+
 
 # * Make SSH available
 EXPOSE 22
