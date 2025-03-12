@@ -1,6 +1,6 @@
 # install python dep
 pyrealsense2
-tf
+#tf
 numpy-quaternion
 # install some pip packages needed for testing
 # argcomplete 
