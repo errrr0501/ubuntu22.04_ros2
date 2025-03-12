@@ -113,10 +113,10 @@ RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831A
 RUN sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
 RUN apt update && apt install -y --no-install-recommends \
 #   #Realsense SDK depend
-    librealsense2-dkms \
-    librealsense2-utils \
-    librealsense2-dev \
-    librealsense2-dbg \
+    #librealsense2-dkms \
+    #librealsense2-utils \
+    #librealsense2-dev \
+    #librealsense2-dbg \
     # ros-humble-librealsense2* \
     ros-humble-diagnostic-updater \
     ros-humble-moveit \
