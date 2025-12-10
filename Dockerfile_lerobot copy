@@ -128,48 +128,25 @@ RUN apt update && apt install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists 
 
-RUN apt update && apt install -y --no-install-recommends \
-    ros-humble-nav2* \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
 
-#   #OMPL depend
-RUN apt update && apt install -y --no-install-recommends \
-    lsb-release \
-    g++ \
-    cmake \
-    pkg-config \
-    libboost-serialization-dev \
-    libboost-filesystem-dev \
-    libboost-system-dev \
-    libboost-program-options-dev \
-    libboost-test-dev \
-    libeigen3-dev \
-    libode-dev wget \
-    libyaml-cpp-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
+RUN add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
 
-RUN sudo pip3 install -vU https://github.com/CastXML/pygccxml/archive/develop.zip pyplusplus
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    librealsense2-utils \
+    librealsense2-dev \
+    librealsense2-udev-rules \ 
+    && apt-get clean && rm -rf /var/lib/apt/lists/*c
 
-RUN apt update && apt install -y --no-install-recommends \
-    castxml \
-    libboost-python-dev \
-    libboost-numpy-dev \
-    python3-numpy \
-    pypy3 \
-    python3-pyqt5.qtopengl \
-    freeglut3-dev \
-    libassimp-dev \
-    python3-opengl \
-    python3-flask \
-    python3-celery \
-    libccd-dev \
-    libfcl-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists 
 
-RUN sudo pip3 install -vU PyOpenGL-accelerate
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    v4l-utils \
+    ffmpeg \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-humble-ur \
+    ros-humble-xacro \
+    ros-humble-ros-testing
 
 ############################## USER CONFIG ####################################
 # * Switch user to ${USER}
@@ -185,13 +162,35 @@ RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
 
 # * Switch workspace to ~/work
-RUN sudo mkdir -p /home/"${USER}"/work
+RUN mkdir -p /home/"${USER}"/work
 WORKDIR /home/"${USER}"/work
-#moveit update lacking of lib, manaual install here
-RUN sudo apt install ros-humble-geometric-shapes
-RUN sudo apt install ros-humble-srdfdom
+
+# COPY lerobot_pyproject.toml .
+# COPY gr00t_pyproject.toml .
+
+#lerobot env
+# RUN git clone https://github.com/huggingface/lerobot.git && \
+#     cd lerobot && \
+#     pip3 install -e .
+# COPY ../ur5e_data_collect_ws/Isaac-GR00T/ /home/"${USER}"/work/Isaac-GR00T/
+WORKDIR /home/"${USER}"/work/ur5e_data_collect_ws
+RUN git clone https://github.com/NVIDIA/Isaac-GR00T && \
+    cd Isaac-GR00T && \
+    pip3 install -e .[base]
+
+# COPY ../ur5e_data_collect_ws/lerobot/ /home/"${USER}"/work/lerobot/
+RUN git clone https://github.com/huggingface/lerobot.git && \
+    cd lerobot && \
+    pip3 install -e .
+
+RUN pip3 install avp_stream --no-deps
+RUN pip3 install grpcio
+RUN pip3 install numpy==1.26.4
 
 
+
+
+    
 # * Make SSH available
 EXPOSE 22
 
