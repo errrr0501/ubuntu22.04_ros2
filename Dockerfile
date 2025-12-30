@@ -91,19 +91,6 @@ RUN apt update \
 # RUN sudo apt install -y python3-colcon-common-extensions
 
 
-# RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
-# RUN sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
-
-# RUN apt update && apt install -y --no-install-recommends \
-# #   #Realsense SDK depend
-# #   librealsense2-dkms \
-# #   librealsense2-utils \
-# #   librealsense2-dev \
-# #   librealsense2-dbg \
-#   ros-humble-librealsense2* \
-#   ros-humble-diagnostic-updater \
-#   && apt-get clean \
-#   && rm -rf /var/lib/apt/lists  
 
 
 RUN ./config/pip/pip_setup.sh
@@ -171,6 +158,9 @@ RUN apt update && apt install -y --no-install-recommends \
 
 RUN sudo pip3 install -vU PyOpenGL-accelerate
 
+###install realsense SDK
+RUN git clone https://github.com/realsenseai/librealsense.git && cd librealsense \
+    && mkdir build && cd build && cmake .. && make uninstall && make clean && make && sudo make install
 ############################## USER CONFIG ####################################
 # * Switch user to ${USER}
 USER ${USER}
@@ -191,6 +181,8 @@ WORKDIR /home/"${USER}"/work
 RUN sudo apt install ros-humble-geometric-shapes
 RUN sudo apt install ros-humble-srdfdom
 
+
+WORKDIR /home/"${USER}"/work
 
 # * Make SSH available
 EXPOSE 22
