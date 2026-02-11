@@ -159,7 +159,7 @@ RUN apt update && apt install -y --no-install-recommends \
 RUN sudo pip3 install -vU PyOpenGL-accelerate
 
 ###install realsense SDK
-RUN git clone https://github.com/realsenseai/librealsense.git && cd librealsense \
+RUN git clone https://github.com/realsenseai/librealsense.git -b 2.57.5 && cd librealsense \
     && mkdir build && cd build && cmake .. && make uninstall && make clean && make && sudo make install
 ############################## USER CONFIG ####################################
 # * Switch user to ${USER}
