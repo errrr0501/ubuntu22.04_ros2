@@ -183,7 +183,7 @@ RUN sudo apt install -y ros-humble-geometric-shapes
 RUN sudo apt install -y ros-humble-srdfdom
 RUN sudo apt install -y ros-humble-visp
 RUN sudo pip install opencv-python==4.11.0.86
-RUN sudo pip install opencv--contrib-python==4.11.0.86
+RUN sudo pip install opencv-contrib-python==4.11.0.86
 RUN sudo pip install numpy==1.26.4
 
 WORKDIR /home/"${USER}"/work
